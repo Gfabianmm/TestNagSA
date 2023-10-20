@@ -1,0 +1,58 @@
+﻿@page "/Factura/fetch"
+
+<PageTitle>Factura</PageTitle>
+
+@using TestNagSAApp.Data
+@using TestNagSAApp.Domain.Factura;
+@inject FacturaService facturaService
+
+<h1>Facturas</h1>
+
+<p>Listado de facturas</p>
+
+<br />
+
+    <div class="float-end">
+    <a href="/Factura/nuevo" class="btn btn-success">Agregar + </a>
+    </div>
+
+
+@if (_productos == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Descuento</th>
+                <th>IVA</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var _producto in _productos)
+            {
+                <tr>
+                    <td>@_producto.Cliente</td>
+                    <td>@_producto.Fecha.ToString("dd/MM/yyyy")</td>
+                    <td>@_producto.Descuento.ToString("C2")</td>
+                    <td>@_producto.IVA.ToString("C2")</td>
+                    <td>@_producto.ValorTotal.ToString("C2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private FacturaDTO[]? _productos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _productos = await facturaService.GetAsync();
+    }
+}

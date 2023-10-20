@@ -11,6 +11,8 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<FormaPagoService>();
 builder.Services.AddSingleton<ProductoService>();
+builder.Services.AddSingleton<FacturaService>();
+
 
 
 var app = builder.Build();

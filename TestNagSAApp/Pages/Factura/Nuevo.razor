@@ -1,18 +1,19 @@
-﻿@page "/Producto/nuevo"
+﻿@page "/Factura/nuevo"
 
-<PageTitle>Producto</PageTitle>
+<PageTitle>Factura</PageTitle>
 
 @using TestNagSAApp.Data
+@using TestNagSAApp.Domain.Factura;
 @using TestNagSAApp.Domain.Producto;
-@inject ProductoService productoService
+@inject FacturaService facturaService
 @inject NavigationManager navigationManager
 
-<h1>Producto nuevo</h1>
+<h1>Factura Nueva</h1>
 <br />
 <div class="float-end">
-    <a href="/Producto/fetch" class="btn btn-secondary">Regresar </a>
+    <a href="/Factura/fetch" class="btn btn-secondary">Regresar </a>
 </div>
-<p>Agregar nueva forma de pago</p>
+<p>Agregar nueva factura</p>
 
 
 
@@ -23,31 +24,50 @@
         <div class="card">
             <div class="card-body">
 
-                <div class="col-12 col-lg-6">
-                    <div class="mb-3">
+                <div class="col-12 ">
+                    <div class="col-lg-6 mb-3">
                         <label class="form-label">Descripción:</label>
 
-                        <InputText class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Descripcion />
+                        <InputText class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Cliente />
                         <div class="invalid-feedback">
-                            <ValidationMessage class="text-danger" For="@(() => _producto.Descripcion)" />
+                            <ValidationMessage class="text-danger" For="@(() => _producto.Cliente)" />
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-lg-6 mb-3">
                         <label class="form-label">Stock:</label>
 
-                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Stock />
+                        <InputDate class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Fecha />
                         <div class="invalid-feedback">
-                            <ValidationMessage class="text-danger" For="@(() => _producto.Stock)" />
+                            <ValidationMessage class="text-danger" For="@(() => _producto.Fecha)" />
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-lg-6 mb-3">
+                        <label class="form-label">Descuento:</label>
+
+                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Descuento />
+                        <div class="invalid-feedback">
+                            <ValidationMessage class="text-danger" For="@(() => _producto.Descuento)" />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-3">
+                        <label class="form-label">Valor IVA:</label>
+
+                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.IVA />
+                        <div class="invalid-feedback">
+                            <ValidationMessage class="text-danger" For="@(() => _producto.IVA)" />
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-6 mb-3">
                         <label class="form-label">Valor Venta:</label>
 
-                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.ValorVenta />
+                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.ValorTotal />
                         <div class="invalid-feedback">
-                            <ValidationMessage class="text-danger" For="@(() => _producto.ValorVenta)" />
+                            <ValidationMessage class="text-danger" For="@(() => _producto.ValorTotal)" />
                         </div>
                     </div>
 
@@ -84,7 +104,7 @@
 
     
     public bool _isBusy { get; set; }
-    private ProductoDTO _producto = new ProductoDTO() { Estado = "A" };
+    private FacturaDTO _producto = new FacturaDTO() { Estado = "A" };
 
     protected override async Task OnInitializedAsync()
     {
@@ -96,7 +116,7 @@
         StateHasChanged();
         try
         {
-            var response= await productoService.PostAsync(_producto);
+            var response = await facturaService.PostAsync(_producto);
             if (response.Item1)
             {
                 navigationManager.NavigateTo("/Producto/fetch");
