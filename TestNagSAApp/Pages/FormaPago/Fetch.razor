@@ -1,0 +1,52 @@
+﻿@page "/FormaPago/fetch"
+
+<PageTitle>Forma de Pago</PageTitle>
+
+@using TestNagSAApp.Data
+@using TestNagSAApp.Domain.FormaPago;
+@inject FormaPagoService formaPagoService
+
+<h1>Forma de Pago</h1>
+
+<p>Listado de formas de pago</p>
+
+<br />
+
+    <div class="float-end">
+    <a href="/FormaPago/nuevo" class="btn btn-success">Agregar + </a>
+    </div>
+
+
+@if (_formasPago == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var _formaPago in _formasPago)
+            {
+                <tr>
+                    <td>@_formaPago.Descripcion</td>
+                    <td>@_formaPago.Estado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private FormaPagoDTO[]? _formasPago;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _formasPago = await formaPagoService.GetAsync();
+    }
+}
