@@ -4,8 +4,14 @@
 
 @using TestNagSAApp.Data
 @using TestNagSAApp.Domain.Factura;
+@using TestNagSAApp.Domain.FormaPago;
 @using TestNagSAApp.Domain.Producto;
+
 @inject FacturaService facturaService
+@inject FormaPagoService formaPagoService
+@inject ProductoService productoService
+
+
 @inject NavigationManager navigationManager
 
 <h1>Factura Nueva</h1>
@@ -17,34 +23,38 @@
 
 
 
-<EditForm Model="@_producto" OnValidSubmit="@OnValidSubmit">
-    @if (_producto is not null)
+<EditForm Model="@_factura" OnValidSubmit="@OnValidSubmit">
+    @if (_factura is not null)
     {
 
         <div class="card">
             <div class="card-body">
 
                 <div class="col-12 ">
-                    <div class="col-6 mb-3">
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-3">
                         <label class="form-label">Nombre Cliente:</label>
 
-                        <InputText class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Cliente />
+                        <InputText class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_factura.Cliente />
                         <div class="invalid-feedback">
-                            <ValidationMessage class="text-danger" For="@(() => _producto.Cliente)" />
+                            <ValidationMessage class="text-danger" For="@(() => _factura.Cliente)" />
                         </div>
                     </div>
 
-                    <div class="col-lg-6 col-12 mb-3">
+                    <div class="col-lg-3 col-md-6 col-12 mb-3">
                         <label class="form-label">Fecha:</label>
 
-                        <InputDate class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Fecha />
+                        <InputDate class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_factura.Fecha />
                         <div class="invalid-feedback">
-                            <ValidationMessage class="text-danger" For="@(() => _producto.Fecha)" />
+                            <ValidationMessage class="text-danger" For="@(() => _factura.Fecha)" />
                         </div>
                     </div>
-
+                    </div>
                     <div class="col-12">
-                        <h5>Detalle</h5>
+                        <div class="d-flex">
+                            <button class="btn btn-secondary" type="button" @onclick="AgregarNuevoDetalle">+ </button>                            &nbsp;&nbsp; <h5>Detalle</h5>
+
+                        </div>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -57,14 +67,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var detalle in _producto.FacturaDetalle)
+                                @foreach (var detalle in _factura.FacturaDetalle)
                                 {
                                     <tr>
                                         <td>
-                                            <InputText class="form-control" @bind-Value="detalle.IdProducto" />
+                                            <select class="form-control" @bind="detalle.IdProducto" @oninput="(e)=>{ ActualizarValor(e, detalle);}">
+                                                @foreach (var producto in _productos)
+                                                {
+                                                    <option value="@producto.IdProducto">@producto.Descripcion</option>
+                                                }
+                                            </select>
                                         </td>
                                         <td>
-                                            <InputNumber class="form-control" @bind-Value="detalle.Cantidad" />
+                                        <InputNumber class="form-control" @bind-Value="detalle.Cantidad" @onblur="()=>{ Calcular( detalle);}" />
                                         </td>
 
                                         <td>
@@ -72,10 +87,11 @@
                                         </td>
 
                                         <td>
-                                            <InputNumber class="form-control" @bind-Value="detalle.Descuento" />
+                                            <InputNumber class="form-control" @bind-Value="detalle.Descuento" @onblur="()=>{ Calcular( detalle);}" />
                                         </td>
                                         <td>
-                                            <InputNumber class="form-control" @bind-Value="detalle.IVA" />
+                                            <span class="form-control">@detalle.IVA</span>
+                                            @* <InputNumber class="form-control" @bind-Value="detalle.IVA" /> *@
                                         </td>
                                         <td>
                                             <span class="form-control">@detalle.Total</span>
@@ -85,11 +101,13 @@
                             </tbody>
                         </table>
                     </div>
-                    <!-- Botón para agregar nuevo detalle -->
-                    <button class="btn btn-secondary" type="button" @onclick="AgregarNuevoDetalle">Agregar Detalle + </button>
+
 
                     <div class="col-12 mt-3">
-                        <h5>Forma pago</h5>
+                        <div class="d-flex">
+                            <button class="btn btn-secondary" type="button" @onclick="AgregarNuevoFormaPago">+ </button>
+                            &nbsp;&nbsp;<h5>Forma pago</h5>
+                        </div>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -98,11 +116,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var detalle in _producto.FacturaFormaPago)
+                                @foreach (var detalle in _factura.FacturaFormaPago)
                                 {
                                     <tr>
                                         <td>
-                                            @* <InputText class="form-control" /> *@
+                                            <select class="form-control" @bind="detalle.IdFormaPago">
+                                                @foreach (var pago in _formasPago)
+                                                {
+                                                    <option value="@pago.IdFormaPago">@pago.Descripcion</option>
+                                                }
+                                            </select>
                                         </td>
                                         <td>
                                             <InputNumber class="form-control" @bind-Value="detalle.Valor" />
@@ -112,16 +135,16 @@
                             </tbody>
                         </table>
                     </div>
-                    <!-- Botón para agregar forma pago -->
-                    <button class="btn btn-secondary" type="button" @onclick="AgregarNuevoFormaPago">Agregar Forma Pago + </button>
+
+
 
                     <div class="row mt-3">
                         <div class="col">
                             <div class="col-lg-6 col-12 mb-3">
                                 <label class="form-label">Descuento:</label>
-                                <span class="form-control">@_producto.Descuento </span>
+                                <span class="form-control">@_factura.Descuento.ToString("C2") </span>
                                 <div class="invalid-feedback">
-                                    <ValidationMessage class="text-danger" For="@(() => _producto.Descuento)" />
+                                    <ValidationMessage class="text-danger" For="@(() => _factura.Descuento)" />
                                 </div>
                             </div>
                         </div>
@@ -129,18 +152,18 @@
                         <div class="col">
                             <div class="col-lg-6 mb-3">
                                 <label class="form-label">Valor IVA:</label>
-                                <span class="form-control">@_producto.IVA</span>
+                                <span class="form-control">@_factura.IVA.ToString("C2")</span>
                                 <div class="invalid-feedback">
-                                    <ValidationMessage class="text-danger" For="@(() => _producto.IVA)" />
+                                    <ValidationMessage class="text-danger" For="@(() => _factura.IVA)" />
                                 </div>
                             </div>
                         </div>
                         <div class="col">
                             <div class="col-lg-6 mb-3">
                                 <label class="form-label">Valor Venta:</label>
-                                <span class="form-control">@_producto.ValorTotal</span>
+                                <span class="form-control">@_factura.ValorTotal.ToString("C2")</span>
                                 <div class="invalid-feedback">
-                                    <ValidationMessage class="text-danger" For="@(() => _producto.ValorTotal)" />
+                                    <ValidationMessage class="text-danger" For="@(() => _factura.ValorTotal)" />
                                 </div>
                             </div>
                         </div>
@@ -178,11 +201,17 @@
 
 
     public bool _isBusy { get; set; }
-    private FacturaDTO _producto = new FacturaDTO() { Estado = "A" };
+    private FacturaDTO _factura = new FacturaDTO() { Estado = "A" };
 
+    private ProductoDTO[]? _productos;
+    private FormaPagoDTO[]? _formasPago;
     protected override async Task OnInitializedAsync()
     {
-        //_formasPago = await formaPagoService.GetAsync();
+
+        _formasPago = await formaPagoService.GetAsync();
+        _productos = await productoService.GetAsync();
+
+
     }
     public async void OnValidSubmit()
     {
@@ -190,10 +219,10 @@
         StateHasChanged();
         try
         {
-            var response = await facturaService.PostAsync(_producto);
+            var response = await facturaService.PostAsync(_factura);
             if (response.Item1)
             {
-                navigationManager.NavigateTo("/Producto/fetch");
+                navigationManager.NavigateTo("/Factura/fetch");
             }
             else
             {
@@ -217,7 +246,7 @@
         StateHasChanged();
         try
         {
-            _producto.FacturaDetalle.Add(new FacturaDetalleDTO());
+            _factura.FacturaDetalle.Add(new FacturaDetalleDTO() {IdProducto="", Estado="A"});
         }
         catch (Exception)
         {
@@ -236,7 +265,7 @@
         StateHasChanged();
         try
         {
-            _producto.FacturaFormaPago.Add(new FacturaFormaPagoDTO() { Valor=0, Estado="A" });
+            _factura.FacturaFormaPago.Add(new FacturaFormaPagoDTO() { Valor = 0, Estado = "A" });
         }
         catch (Exception)
         {
@@ -250,6 +279,33 @@
     }
 
 
+
+
+    private void ActualizarValor(ChangeEventArgs e, FacturaDetalleDTO detalle)
+    {
+        var producto = _productos.FirstOrDefault(p => p.IdProducto == e.Value.ToString());
+
+        if (producto != null)
+        {
+            detalle.Valor = producto.ValorVenta;
+            Calcular(detalle);
+
+            // Puedes realizar otras acciones aquí si es necesario
+        }
+    }
+
+    private void Calcular(FacturaDetalleDTO detalle)
+    {
+        if (detalle.Cantidad <= 0)
+            detalle.Cantidad = 1;
+        detalle.IVA = ((detalle.Cantidad * detalle.Valor) - detalle.Descuento) * 0.12M;
+        detalle.Total = ((detalle.Cantidad * detalle.Valor) - detalle.Descuento) + detalle.IVA;
+
+        _factura.Descuento = _factura.FacturaDetalle.Sum(a => a.Descuento);
+        _factura.IVA = _factura.FacturaDetalle.Sum(a => a.IVA);
+        _factura.ValorTotal = _factura.FacturaDetalle.Sum(a => a.Total);
+
+    }
 
 
 

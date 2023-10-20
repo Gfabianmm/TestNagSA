@@ -28,6 +28,7 @@ public class FacturaDetalleResource : IResource
 
     [Required,StringLength(2)]
     public string Estado { get; set; }
-    public ProductoResource Producto { get; set; }
+
+    //public ProductoResource Producto { get; set; }
 
 }

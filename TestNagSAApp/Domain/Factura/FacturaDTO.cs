@@ -6,6 +6,7 @@ namespace TestNagSAApp.Domain.Factura
     public class FacturaDTO
     {
         public FacturaDTO() {
+            Fecha=DateTime.Now;
             FacturaDetalle = new List<FacturaDetalleDTO>();
             FacturaFormaPago= new List<FacturaFormaPagoDTO>();
         }

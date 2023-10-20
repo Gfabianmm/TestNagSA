@@ -27,7 +27,16 @@ public class FacturaService
         {
 
             var response = await _httpClient.PostAsJsonAsync("api/Factura", value);
-            return new Tuple<bool, string?>(true, null);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return new Tuple<bool, string?>(true, null);
+            }
+            else
+            {
+                var error=await response.Content.ReadAsStringAsync();
+                return new Tuple<bool, string?>(false, error);
+            }
         }
         catch (Exception ex)
         {
