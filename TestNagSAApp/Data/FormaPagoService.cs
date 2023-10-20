@@ -9,11 +9,13 @@ public class FormaPagoService
 {
 
     private HttpClient _httpClient;
+    private IConfiguration _configuration;
 
-    public FormaPagoService(IHttpClientFactory httpClientFactory)
+    public FormaPagoService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
     {
+        _configuration = configuration;
         _httpClient = httpClientFactory.CreateClient();
-        _httpClient.BaseAddress = new Uri("https://localhost:7146");
+        _httpClient.BaseAddress = new Uri(_configuration.GetValue<string>("url"));
     }
 
     public async Task<FormaPagoDTO[]?> GetAsync()

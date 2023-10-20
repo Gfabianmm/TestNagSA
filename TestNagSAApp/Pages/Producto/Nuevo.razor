@@ -1,0 +1,119 @@
+﻿@page "/Producto/nuevo"
+
+<PageTitle>Producto</PageTitle>
+
+@using TestNagSAApp.Data
+@using TestNagSAApp.Domain.Producto;
+@inject ProductoService productoService
+@inject NavigationManager navigationManager
+
+<h1>Forma de Pago</h1>
+<br />
+<div class="float-end">
+    <a href="/Producto/fetch" class="btn btn-secondary">Regresar </a>
+</div>
+<p>Agregar nueva forma de pago</p>
+
+
+
+<EditForm Model="@_producto" OnValidSubmit="@OnValidSubmit">
+    @if (_producto is not null)
+    {
+
+        <div class="card">
+            <div class="card-body">
+
+                <div class="col-12 col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label">Descripción:</label>
+
+                        <InputText class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Descripcion />
+                        <div class="invalid-feedback">
+                            <ValidationMessage class="text-danger" For="@(() => _producto.Descripcion)" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Stock:</label>
+
+                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Stock />
+                        <div class="invalid-feedback">
+                            <ValidationMessage class="text-danger" For="@(() => _producto.Stock)" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Valor Venta:</label>
+
+                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.ValorVenta />
+                        <div class="invalid-feedback">
+                            <ValidationMessage class="text-danger" For="@(() => _producto.ValorVenta)" />
+                        </div>
+                    </div>
+
+                    <DataAnnotationsValidator />
+                </div>
+
+            </div>
+            <div class="card-footer d-flex justify-content-start py-6 px-9">
+
+                <button disabled="@_isBusy" type="submit" class="btn btn-primary">
+                    @if (!_isBusy)
+                    {
+                        <text>Guardar</text> <i class="bi bi-cloud-plus"></i>
+                    }
+                    else
+                    {
+                        <text>Procesando...</text>
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    }
+                </button>
+            </div>
+        </div>
+
+
+
+
+    }
+
+
+</EditForm>
+
+
+@code {
+
+    
+    public bool _isBusy { get; set; }
+    private ProductoDTO _producto = new ProductoDTO() { Estado = "A" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        //_formasPago = await formaPagoService.GetAsync();
+    }
+    public async void OnValidSubmit()
+    {
+        _isBusy = true;
+        StateHasChanged();
+        try
+        {
+            var response= await productoService.PostAsync(_producto);
+            if (response.Item1)
+            {
+                navigationManager.NavigateTo("/Producto/fetch");
+            }
+            else
+            {
+                
+            }
+        }
+        catch (Exception)
+        {
+            //aqui debe mostrar alguna alerta
+        }
+        finally
+        {
+            _isBusy = false;
+            StateHasChanged();
+        }
+    }
+}

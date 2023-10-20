@@ -1,0 +1,56 @@
+﻿@page "/Producto/fetch"
+
+<PageTitle>Forma de Pago</PageTitle>
+
+@using TestNagSAApp.Data
+@using TestNagSAApp.Domain.Producto;
+@inject ProductoService productoService
+
+<h1>Producto</h1>
+
+<p>Listado de Productos</p>
+
+<br />
+
+    <div class="float-end">
+    <a href="/Producto/nuevo" class="btn btn-success">Agregar + </a>
+    </div>
+
+
+@if (_productos == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Stock</th>
+                <th>Valor Venta</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var _producto in _productos)
+            {
+                <tr>
+                    <td>@_producto.Descripcion</td>
+                    <td>@_producto.Stock</td>
+                    <td>@_producto.ValorVenta.ToString("C2")</td>
+                    <td>@_producto.Estado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ProductoDTO[]? _productos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _productos = await productoService.GetAsync();
+    }
+}

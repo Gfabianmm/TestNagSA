@@ -10,6 +10,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient(); 
 
 builder.Services.AddSingleton<FormaPagoService>();
+builder.Services.AddSingleton<ProductoService>();
 
 
 var app = builder.Build();
