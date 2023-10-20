@@ -25,8 +25,8 @@
             <div class="card-body">
 
                 <div class="col-12 ">
-                    <div class="col-lg-6 mb-3">
-                        <label class="form-label">Descripción:</label>
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Nombre Cliente:</label>
 
                         <InputText class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Cliente />
                         <div class="invalid-feedback">
@@ -34,8 +34,8 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-6 mb-3">
-                        <label class="form-label">Stock:</label>
+                    <div class="col-lg-6 col-12 mb-3">
+                        <label class="form-label">Fecha:</label>
 
                         <InputDate class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Fecha />
                         <div class="invalid-feedback">
@@ -43,69 +43,108 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-6 mb-3">
-                        <label class="form-label">Descuento:</label>
-
-                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.Descuento />
-                        <div class="invalid-feedback">
-                            <ValidationMessage class="text-danger" For="@(() => _producto.Descuento)" />
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6 mb-3">
-                        <label class="form-label">Valor IVA:</label>
-
-                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.IVA />
-                        <div class="invalid-feedback">
-                            <ValidationMessage class="text-danger" For="@(() => _producto.IVA)" />
-                        </div>
-                    </div>
-
-
-                    <div class="col-lg-6 mb-3">
-                        <label class="form-label">Valor Venta:</label>
-
-                        <InputNumber class="form-control" id="Descripcion" autocomplete="off" @bind-Value=@_producto.ValorTotal />
-                        <div class="invalid-feedback">
-                            <ValidationMessage class="text-danger" For="@(() => _producto.ValorTotal)" />
-                        </div>
-                    </div>
-
-
-
                     <div class="col-12">
-                        <h4>Factura Detalle</h4>
-                        @foreach (var detalle in _producto.FacturaDetalle)
-                        {
-                            <div class="col-lg-6 mb-3">
-                                <label class="form-label">Código:</label>
-                                <InputText class="form-control" @bind-Value="detalle.IdProducto" />
-                            </div>
+                        <h5>Detalle</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Valor</th>
+                                    <th>Descuento</th>
+                                    <th>IVA</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in _producto.FacturaDetalle)
+                                {
+                                    <tr>
+                                        <td>
+                                            <InputText class="form-control" @bind-Value="detalle.IdProducto" />
+                                        </td>
+                                        <td>
+                                            <InputNumber class="form-control" @bind-Value="detalle.Cantidad" />
+                                        </td>
 
-                            <div class="col-lg-6 mb-3">
-                                <label class="form-label">Valor:</label>
-                                <InputNumber class="form-control" @bind-Value="detalle.Cantidad" />
-                            </div>
+                                        <td>
+                                            <span class="form-control">@detalle.Valor</span>
+                                        </td>
 
-                            <div class="col-lg-6 mb-3">
-                                <label class="form-label">Valor:</label>
-                                <InputNumber class="form-control" @bind-Value="detalle.Descuento" />
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <label class="form-label">Valor:</label>
-                                <InputNumber class="form-control" @bind-Value="detalle.IVA" />
-                            </div>
-
-                            <div class="col-lg-6 mb-3">
-                                <label class="form-label">Valor:</label>
-                                <InputNumber class="form-control" @bind-Value="detalle.Total"  />
-                            </div>
-                        }
-                        <!-- Botón para agregar nuevo detalle -->
-                        <button @onclick="AgregarNuevoDetalle">Agregar Nuevo Detalle</button>
+                                        <td>
+                                            <InputNumber class="form-control" @bind-Value="detalle.Descuento" />
+                                        </td>
+                                        <td>
+                                            <InputNumber class="form-control" @bind-Value="detalle.IVA" />
+                                        </td>
+                                        <td>
+                                            <span class="form-control">@detalle.Total</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
+                    <!-- Botón para agregar nuevo detalle -->
+                    <button class="btn btn-secondary" type="button" @onclick="AgregarNuevoDetalle">Agregar Detalle + </button>
 
+                    <div class="col-12 mt-3">
+                        <h5>Forma pago</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Forma Pago</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in _producto.FacturaFormaPago)
+                                {
+                                    <tr>
+                                        <td>
+                                            @* <InputText class="form-control" /> *@
+                                        </td>
+                                        <td>
+                                            <InputNumber class="form-control" @bind-Value="detalle.Valor" />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Botón para agregar forma pago -->
+                    <button class="btn btn-secondary" type="button" @onclick="AgregarNuevoFormaPago">Agregar Forma Pago + </button>
 
+                    <div class="row mt-3">
+                        <div class="col">
+                            <div class="col-lg-6 col-12 mb-3">
+                                <label class="form-label">Descuento:</label>
+                                <span class="form-control">@_producto.Descuento </span>
+                                <div class="invalid-feedback">
+                                    <ValidationMessage class="text-danger" For="@(() => _producto.Descuento)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Valor IVA:</label>
+                                <span class="form-control">@_producto.IVA</span>
+                                <div class="invalid-feedback">
+                                    <ValidationMessage class="text-danger" For="@(() => _producto.IVA)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Valor Venta:</label>
+                                <span class="form-control">@_producto.ValorTotal</span>
+                                <div class="invalid-feedback">
+                                    <ValidationMessage class="text-danger" For="@(() => _producto.ValorTotal)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <DataAnnotationsValidator />
                 </div>
 
@@ -190,6 +229,27 @@
             StateHasChanged();
         }
     }
+
+    public async void AgregarNuevoFormaPago()
+    {
+        _isBusy = true;
+        StateHasChanged();
+        try
+        {
+            _producto.FacturaFormaPago.Add(new FacturaFormaPagoDTO() { Valor=0, Estado="A" });
+        }
+        catch (Exception)
+        {
+            //aqui debe mostrar alguna alerta
+        }
+        finally
+        {
+            _isBusy = false;
+            StateHasChanged();
+        }
+    }
+
+
 
 
 

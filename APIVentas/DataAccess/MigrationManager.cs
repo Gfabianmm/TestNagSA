@@ -9,8 +9,8 @@ public static class MigrationManager
         using (var scope = host.Services.CreateScope())
         {
             using (var appContext = scope.ServiceProvider.GetRequiredService<VentasDBContext>())
-            {
-
+           {
+                
                 appContext.Database.Migrate();
             }
         }
