@@ -71,6 +71,41 @@
                         </div>
                     </div>
 
+
+
+                    <div class="col-12">
+                        <h4>Factura Detalle</h4>
+                        @foreach (var detalle in _producto.FacturaDetalle)
+                        {
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Código:</label>
+                                <InputText class="form-control" @bind-Value="detalle.IdProducto" />
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Valor:</label>
+                                <InputNumber class="form-control" @bind-Value="detalle.Cantidad" />
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Valor:</label>
+                                <InputNumber class="form-control" @bind-Value="detalle.Descuento" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Valor:</label>
+                                <InputNumber class="form-control" @bind-Value="detalle.IVA" />
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Valor:</label>
+                                <InputNumber class="form-control" @bind-Value="detalle.Total"  />
+                            </div>
+                        }
+                        <!-- Botón para agregar nuevo detalle -->
+                        <button @onclick="AgregarNuevoDetalle">Agregar Nuevo Detalle</button>
+                    </div>
+
+
                     <DataAnnotationsValidator />
                 </div>
 
@@ -102,7 +137,7 @@
 
 @code {
 
-    
+
     public bool _isBusy { get; set; }
     private FacturaDTO _producto = new FacturaDTO() { Estado = "A" };
 
@@ -123,7 +158,7 @@
             }
             else
             {
-                
+
             }
         }
         catch (Exception)
@@ -136,4 +171,26 @@
             StateHasChanged();
         }
     }
+
+    public async void AgregarNuevoDetalle()
+    {
+        _isBusy = true;
+        StateHasChanged();
+        try
+        {
+            _producto.FacturaDetalle.Add(new FacturaDetalleDTO());
+        }
+        catch (Exception)
+        {
+            //aqui debe mostrar alguna alerta
+        }
+        finally
+        {
+            _isBusy = false;
+            StateHasChanged();
+        }
+    }
+
+
+
 }
