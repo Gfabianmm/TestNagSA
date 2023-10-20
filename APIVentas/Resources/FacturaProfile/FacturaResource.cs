@@ -1,14 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using APIVentas.Extensions;
+using APIVentas.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace APIVentas.Models;
 
-public class Factura : EntidadBase
+namespace APIVentas.Resources.FacturaProfile;
+
+public class FacturaResource : IResource
 {
-
-    [Key]
-    public Guid IdFactura { get; set; }
+    public FacturaResource() { }
+    public FacturaResource(Guid id) { 
+        IdFactura = id;
+    }
+    public Guid? IdFactura { get; set; }
 
     [Required, StringLength(500)]
     public string Cliente { get; set; }
@@ -28,7 +33,7 @@ public class Factura : EntidadBase
     [Required, StringLength(2)]
     public string Estado { get; set; }
 
-    public List<FacturaDetalle> FacturaDetalle { get; set; }
-    public List<FacturaFormaPago> FacturaFormaPago { get; set; }
+    public List<FacturaDetalleResource> FacturaDetalle { get; set; }
+    public List<FacturaFormaPagoResource> FacturaFormaPago { get; set; }
 
 }

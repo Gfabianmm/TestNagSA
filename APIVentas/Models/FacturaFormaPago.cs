@@ -15,6 +15,9 @@ public class FacturaFormaPago : EntidadBase
     [Required]
     public Guid IdFormaPago { get; set; }
 
+    [Required, Column(TypeName = "decimal(12, 2)")]
+    public decimal Valor { get; set; }
+
     [Required, StringLength(2)]
     public string Estado { get; set; }
 

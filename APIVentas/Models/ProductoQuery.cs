@@ -8,8 +8,8 @@ public class ProductoQuery : IQueryFilter
     public ProductoQuery(string id) {
         IdProducto = id;
     }
-    public string IdProducto { get; set; }
-    public string Descripcion { get; set; }
-    public string Estado { get; set; }
+    public string? IdProducto { get; set; }
+    public string? Descripcion { get; set; }
+    public string? Estado { get; set; }
 
 }

@@ -1,4 +1,5 @@
 ﻿using APIVentas.Models;
+using APIVentas.Resources.FacturaProfile;
 using APIVentas.Resources.ProductoProfile;
 using APIVentas.Services;
 using AutoMapper;
@@ -8,23 +9,23 @@ namespace APIVentas.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductoController : ControllerBase
+public class FacturaController : ControllerBase
 {
 
-    private readonly ICRUDService<Producto, ProductoQuery, ProductoResource> _service;
+    private readonly ICRUDService<Factura, FacturaQuery, FacturaResource> _service;
     private readonly IMapper _mapper;
-    public ProductoController(ICRUDService<Producto, ProductoQuery, ProductoResource> service, IMapper mapper)
+    public FacturaController(ICRUDService<Factura, FacturaQuery, FacturaResource> service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ProductoResource>>> Get([FromQuery] ProductoQuery filter)
+    public async Task<ActionResult<List<FacturaResource>>> Get([FromQuery] FacturaQuery filter)
     {
         try
         {
-            return Ok(_mapper.Map<List<ProductoResource>>(await _service.Get(filter)));
+            return Ok(_mapper.Map<List<FacturaResource>>(await _service.Get(filter)));
         }
         catch (Exception ex)
         {
@@ -34,11 +35,11 @@ public class ProductoController : ControllerBase
 
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductoResource>> Get(string id)
+    public async Task<ActionResult<FacturaResource>> Get(Guid id)
     {
         try
         {
-            return Ok(_mapper.Map<ProductoResource>(await _service.GetId(new ProductoQuery(id))));
+            return Ok(_mapper.Map<FacturaResource>(await _service.GetId(new FacturaQuery(id))));
         }
         catch (Exception ex)
         {
@@ -48,11 +49,11 @@ public class ProductoController : ControllerBase
 
 
     [HttpPost]
-    public async Task<ActionResult<ProductoResource>> Post([FromBody] ProductoResource value)
+    public async Task<ActionResult<FacturaResource>> Post([FromBody] FacturaResource value)
     {
         try
         {
-            return Ok(_mapper.Map<ProductoResource>(await _service.Post(value)));
+            return Ok(_mapper.Map<FacturaResource>(await _service.Post(value)));
         }
         catch (Exception ex)
         {
@@ -61,11 +62,11 @@ public class ProductoController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<ProductoResource>> Put(string id, [FromBody] ProductoResource value)
+    public async Task<ActionResult<FacturaResource>> Put(Guid id, [FromBody] FacturaResource value)
     {
         try
         {
-            if (id != value.IdProducto)
+            if (id != value.IdFactura)
                 return BadRequest("El id no coincide con el objeto");
 
             var _obj = await _service.Put(value);
@@ -83,11 +84,11 @@ public class ProductoController : ControllerBase
 
     ///TODO: Esto es solo un ejemplo de eliminacion, no se debe eliminar físicamente los registros de la base de datos
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(string id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         try
         {
-            if (!await _service.Delete(new ProductoResource(id)))
+            if (!await _service.Delete(new FacturaResource(id)))
                 return NotFound();
 
             return Ok();

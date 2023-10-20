@@ -42,6 +42,7 @@ public class ProductoService : ICRUDService<Producto, ProductoQuery, ProductoRes
 
         _mapper.Map(value, _obj);
 
+
         _obj.FechaModificacion = DateTime.Now;
         _obj.UsuarioModificacion = "sistema";
         await _context.SaveChangesAsync();
@@ -51,7 +52,7 @@ public class ProductoService : ICRUDService<Producto, ProductoQuery, ProductoRes
     public async Task<Producto> Post(ProductoResource value)
     {
         var _obj = new Producto();
-        _mapper.Map(_obj, value);
+        _mapper.Map(value, _obj);
 
 
         _obj.FechaIngreso = DateTime.Now;
@@ -88,7 +89,8 @@ public class ProductoService : ICRUDService<Producto, ProductoQuery, ProductoRes
         */
 
         /// TODO: Para hacerlo más rápido, cuento la cantidad de registros y le sumo 1 para generar un secuencial
-        return $"PV{(await _context.Producto.CountAsync()).ToString("N3")}";
+        
+        return $"PV{((await _context.Producto.CountAsync())+1).ToString("D3")}";
 
     }
 }

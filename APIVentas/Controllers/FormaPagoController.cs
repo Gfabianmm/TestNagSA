@@ -20,7 +20,7 @@ public class FormaPagoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<FormaPagoResource>>> Get(FormaPagoQuery filter)
+    public async Task<ActionResult<List<FormaPagoResource>>> Get([FromQuery] FormaPagoQuery filter)
     {
         try
         {

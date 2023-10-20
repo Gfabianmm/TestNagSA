@@ -40,7 +40,7 @@ public class FormaPagoService : ICRUDService<FormaPago, FormaPagoQuery, FormaPag
         if (_formaPago == null)
             return null;
 
-        _mapper.Map(value, _formaPago);
+        _mapper.Map(value,_formaPago);
 
         _formaPago.FechaModificacion = DateTime.Now;
         _formaPago.UsuarioModificacion = "sistema";
@@ -51,11 +51,11 @@ public class FormaPagoService : ICRUDService<FormaPago, FormaPagoQuery, FormaPag
     public async Task<FormaPago> Post(FormaPagoResource value)
     {
         var _formaPago = new FormaPago();
-        _mapper.Map(_formaPago, value);
-
+        _mapper.Map(value, _formaPago);
 
         _formaPago.FechaIngreso = DateTime.Now;
         _formaPago.UsuarioIngreso = "sistema";
+        
         _formaPago.IdFormaPago = Guid.NewGuid();
 
         await _context.FormaPago.AddAsync(_formaPago);

@@ -1,4 +1,5 @@
-﻿using APIVentas.Models;
+﻿using APIVentas.DataAccess.Seed;
+using APIVentas.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIVentas.DataAccess;
@@ -12,6 +13,8 @@ public class VentasDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new FormaPagoConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductoConfiguration());
 
         var cascadeFKs = modelBuilder.Model.GetEntityTypes()
             .SelectMany(t => t.GetForeignKeys())
